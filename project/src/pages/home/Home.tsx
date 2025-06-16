@@ -40,7 +40,6 @@ export const Home = () => {
                 setLikedCards(userLikedCards);
                 localStorage.setItem("likedCards", JSON.stringify(userLikedCards));
             }
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             toast.error("שגיאה בקבלת כרטיסים");
         }
@@ -64,17 +63,17 @@ export const Home = () => {
         getCards();
     }, []);
 
+  const filteredCards = cards.filter((card) => {
+  if (!query) return true;
 
-    const filteredCards = cards.filter((card) => {
-        if (!query) return true;
-        return (
-            card.title.toLowerCase().includes(query) ||
-            card.phone.toLowerCase().includes(query) ||
-            card.address.country.toLowerCase().includes(query) ||
-            card.address.city.toLowerCase().includes(query) ||
-            card.address.street.toLowerCase().includes(query)
-        );
-    });
+  return (
+    (card.title ?? "").toLowerCase().includes(query) ||
+    (card.phone ?? "").toLowerCase().includes(query) ||
+    (card.address?.country ?? "").toLowerCase().includes(query) ||
+    (card.address?.city ?? "").toLowerCase().includes(query) ||
+    (card.address?.street ?? "").toLowerCase().includes(query)
+  );
+});
 
     const toggleLike = async (cardId: string) => {
         if (!isLoggedIn) {
@@ -106,7 +105,7 @@ export const Home = () => {
                 if (typeof like === "string") return like === userId;
                 if (typeof like === "object") return like._id === userId || like.id === userId;
                 return false;
-            });
+            }) ?? false;
 
             setLikedCards((prev) => {
                 const updated = isNowLiked
@@ -158,23 +157,25 @@ export const Home = () => {
 
                     <div className="w-full h-48 overflow-hidden rounded-t-lg">
                         <img
-                            src={card.image.url}
-                            alt={card.image.alt || card.title}
+                            src={card.image?.url ?? "path/to/default-image.jpg"}
+                            alt={card.image?.alt ?? card.title ?? "Image"}
                             className="w-full h-full object-cover"
                         />
                     </div>
 
                     <div className="p-4 flex flex-col justify-between h-40">
-                        <h5 className="text-xl font-semibold text-gray-900 dark:text-white truncate">{card.title}</h5>
+                        <h5 className="text-xl font-semibold text-gray-900 dark:text-white truncate">
+                            {card.title ?? "כותרת לא זמינה"}
+                        </h5>
 
                         <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400 mt-1">
                             <FiPhone className="text-lg" />
-                            {card.phone}
+                            {card.phone ?? "-"}
                         </div>
 
                         <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
                             <FiMapPin className="text-lg" />
-                            {card.address.country}
+                            {card.address?.country ?? "-"}
                         </div>
 
                         <Link
