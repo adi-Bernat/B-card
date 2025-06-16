@@ -40,6 +40,7 @@ export const Home = () => {
                 setLikedCards(userLikedCards);
                 localStorage.setItem("likedCards", JSON.stringify(userLikedCards));
             }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             toast.error("שגיאה בקבלת כרטיסים");
         }
